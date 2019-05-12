@@ -1,6 +1,8 @@
 package list
 
-import "errors"
+import (
+	"errors"
+)
 
 type Node struct {
 	Last *Node
@@ -10,8 +12,8 @@ type Node struct {
 
 type List struct {
 	Head *Node
-	Last *Node
-	size int
+	End  *Node
+	Size int
 }
 
 // 获取节点
@@ -42,40 +44,98 @@ func (linkList *List) Insert(index int, data interface{}) error {
 	insertNode := new(Node)
 	insertNode.Data = data
 
-	if linkList.size == 0 {
+	if linkList.Size == 0 {
 		// 首次插入
-		linkList.Last = insertNode
+		linkList.End = insertNode
 		linkList.Head = insertNode
-	} else if index == linkList.size {
-		lastNode, err := linkList.Get(index - 1)
-		if err != nil {
-			return err
-		}
-		lastNode.Next = insertNode
-		insertNode.Last = lastNode
-		linkList.Last = insertNode
+	} else if index == linkList.Size {
+		EndNode, _ := linkList.Get(index - 1)
+		EndNode.Next = insertNode
+		insertNode.Last = EndNode
+		linkList.End = insertNode
 	} else {
-		prevNode, err := linkList.Get(index)
-		if err != nil {
-			return err
-		}
+		prevNode, _ := linkList.Get(index)
 		if index == 0 {
 			insertNode.Next = prevNode
 			prevNode.Last = insertNode
 			linkList.Head = insertNode
+		} else {
+			insertNode.Last = prevNode.Last
+			insertNode.Next = prevNode
+			prevNode.Last.Next = insertNode
+			prevNode.Last = insertNode
 		}
-		insertNode.Last = prevNode.Last
-		insertNode.Next = prevNode
-		prevNode.Last.Next = insertNode
-		prevNode.Last = insertNode
 	}
-	linkList.size++
+	linkList.Size++
 	return nil
+}
+
+// 删除
+func (linkList *List) Delete(index int) (*Node, error) {
+	err := linkList.checkIndex(index)
+	if err != nil {
+		return nil, err
+	}
+	delNode := new(Node)
+	if index == 0 {
+		delNode = linkList.Head
+		linkList.Head = linkList.Head.Next
+	} else if index == linkList.Size-1 {
+		delNode = linkList.End
+		prevNode, _ := linkList.Get(index - 1)
+		prevNode.Next = nil
+		linkList.End = prevNode
+	} else {
+		prevNode, _ := linkList.Get(index - 1)
+		delNode = prevNode.Next
+		delNode.Next.Last = prevNode
+		prevNode.Next = prevNode.Next.Next
+	}
+	linkList.Size--
+	return delNode, err
+}
+
+// 更新
+func (linkList *List) Update(index int, data interface{}) error {
+	err := linkList.checkIndex(index)
+	if err != nil {
+		return err
+	}
+	prevNode, _ := linkList.Get(index)
+	prevNode.Data = data
+	return nil
+}
+
+// 遍历输出
+func (linkList *List) Output() {
+	temp := linkList.Head
+	for true {
+		if temp != nil {
+			temp = temp.Next
+		} else {
+			break
+		}
+	}
+}
+
+// 按照顺序遍历索引
+func (linkList *List) Foreach() []*Node {
+	var ret []*Node
+	temp := linkList.Head
+	for true {
+		if temp != nil {
+			ret = append(ret, temp)
+			temp = temp.Next
+		} else {
+			break
+		}
+	}
+	return ret
 }
 
 // 校验列表范围
 func (linkList *List) checkIndex(index int) error {
-	if index < 0 || index > linkList.size {
+	if index < 0 || index > linkList.Size {
 		return errors.New("元素超出列表范围")
 	}
 	return nil

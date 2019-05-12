@@ -9,6 +9,8 @@ var sl = new(SingleLinkList)
 
 // 测试添加
 func TestSingleLinkList_Insert(t *testing.T) {
+	err0 := sl.Insert(-1, 1)
+	fmt.Println(err0)
 	// 头部插入
 	err1 := sl.Insert(0, 1)
 	err2 := sl.Insert(0, 2)
@@ -18,7 +20,7 @@ func TestSingleLinkList_Insert(t *testing.T) {
 		t.Error(err2)
 		t.Error(err3)
 	}
-	fmt.Println(sl.Head, sl.Head.Next, sl.Head.Next.Next)
+	sl.Output()
 	// 中间插入
 	err4 := sl.Insert(1, 300)
 	// 尾部插入
@@ -27,7 +29,7 @@ func TestSingleLinkList_Insert(t *testing.T) {
 		t.Error(err4)
 		t.Error(err5)
 	}
-	fmt.Println(sl.Head, sl.Head.Next, sl.Head.Next.Next, sl.Head.Next.Next.Next, sl.Head.Next.Next.Next.Next)
+	sl.Output()
 }
 
 // 测试删除
@@ -37,19 +39,21 @@ func TestSingleLinkList_Delete(t *testing.T) {
 	_ = sl.Insert(0, 3)
 	_ = sl.Insert(0, 4)
 	_ = sl.Insert(0, 5)
+	sl.Output()
+	_, err0 := sl.Delete(-1)
+	fmt.Println(err0)
+	// 尾部删除
+	delNodeEnd, _ := sl.Delete(4)
+	fmt.Println(delNodeEnd)
+	sl.Output()
 	// 头部删除
-	fmt.Println(sl.Head, sl.Head.Next, sl.Head.Next.Next, sl.Head.Next.Next.Next, sl.Head.Next.Next.Next.Next)
 	delNode, _ := sl.Delete(0)
 	fmt.Println(delNode)
-	fmt.Println(sl.Head, sl.Head.Next, sl.Head.Next.Next, sl.Head.Next.Next.Next)
-	// 尾部删除
-	delNode, _ = sl.Delete(3)
-	fmt.Println(delNode)
-	fmt.Println(sl.Head, sl.Head.Next, sl.Head.Next.Next)
+	sl.Output()
 	// 中间删除
 	delNode, _ = sl.Delete(1)
 	fmt.Println(delNode)
-	fmt.Println(sl.Head, sl.Head.Next)
+	sl.Output()
 }
 
 // 获取
@@ -58,6 +62,8 @@ func TestSingleLinkList_Get(t *testing.T) {
 	_ = sl.Insert(0, 2)
 	_ = sl.Insert(0, 3)
 	_ = sl.Insert(0, 4)
+	err0 := sl.Insert(-1, 1)
+	fmt.Println(err0)
 	fmt.Println(sl.Get(0))
 	fmt.Println(sl.Get(1))
 	fmt.Println(sl.Get(2))
@@ -72,12 +78,14 @@ func TestSingleLinkList_Update(t *testing.T) {
 	fmt.Println(sl.Get(0))
 	fmt.Println(sl.Get(1))
 	fmt.Println(sl.Get(2))
-	_ = sl.Insert(0, 100)
-	_ = sl.Insert(1, 200)
-	_ = sl.Insert(2, 300)
+	_ = sl.Update(0, 100)
+	_ = sl.Update(1, 200)
+	_ = sl.Update(2, 300)
+	err := sl.Update(-1, 300)
 	fmt.Println(sl.Get(0))
 	fmt.Println(sl.Get(1))
 	fmt.Println(sl.Get(2))
+	fmt.Println(err)
 }
 
 // 遍历

@@ -2,6 +2,7 @@ package list
 
 import (
 	"errors"
+	"fmt"
 )
 
 // 单向链表
@@ -54,10 +55,7 @@ func (sl *SingleLinkList) Update(index int, data interface{}) error {
 	if err != nil {
 		return err
 	}
-	prevNode, err := sl.Get(index)
-	if err != nil {
-		return err
-	}
+	prevNode, _ := sl.Get(index)
 	prevNode.Data = data
 	return nil
 }
@@ -72,19 +70,13 @@ func (sl *SingleLinkList) Delete(index int) (*SingleNode, error) {
 	if index == 0 {
 		delNode = sl.Head
 		sl.Head = sl.Head.Next
-	} else if index == sl.Size {
+	} else if index == sl.Size-1 {
 		delNode = sl.End
-		prevNode, err := sl.Get(index - 1)
-		if err != nil {
-			return nil, err
-		}
+		prevNode, _ := sl.Get(index - 1)
 		prevNode.Next = nil
 		sl.End = prevNode
 	} else {
-		prevNode, err := sl.Get(index - 1)
-		if err != nil {
-			return nil, err
-		}
+		prevNode, _ := sl.Get(index - 1)
 		delNode = prevNode.Next
 		prevNode.Next = prevNode.Next.Next
 	}
@@ -132,4 +124,18 @@ func (sl *SingleLinkList) Foreach() []*SingleNode {
 		temp = temp.Next
 	}
 	return ret
+}
+
+// 遍历输出
+func (sl *SingleLinkList) Output() {
+	i := 0
+	temp := sl.Head
+	for true {
+		if i == sl.Size {
+			break
+		}
+		fmt.Println(temp)
+		temp = temp.Next
+		i++
+	}
 }
